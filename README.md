@@ -1,33 +1,53 @@
-# Synthtraffic releases
+# Synthtraffic
 
-This repository publishes **binary releases only** for [Synthtraffic](https://github.com/SynthTraffic/synthtraffic) (proprietary source).
+Synthtraffic generates realistic, repeatable event traffic from YAML or JSON scenarios.
 
-## Download
+## Install
 
-Open [Releases](https://github.com/SynthTraffic/synthtraffic-releases/releases) and pick the archive for your OS and CPU architecture.
-
-## Verify checksums
-
-Each release includes `checksums.txt`. After downloading:
+1. Open [Releases](https://github.com/SynthTraffic/synthtraffic-releases/releases) and download the archive for your operating system and CPU.
+2. Extract `synthtraffic` (macOS/Linux) or `synthtraffic.exe` (Windows).
+3. Add the folder containing that file to your `PATH` — not the file itself. For example, if the Windows binary is `C:\Tools\synthtraffic\synthtraffic.exe`, add `C:\Tools\synthtraffic` to `PATH`.
+4. Open a new terminal and confirm the installation:
 
 ```bash
-sha256sum -c checksums.txt
+synthtraffic --help
 ```
 
-PowerShell:
+## Get a license
+
+Choose a Free Trial or Developer license on [Pricing](https://www.synthtraffic.io/pricing/). Contact us through the website for Enterprise pricing and custom terms. After checkout or signup, you receive a signed `license.env` by email.
+
+## Set your license
+
+Set `SYNTHTRAFFIC_LICENSE_FILE` to the path of the `license.env` you received.
+
+**macOS/Linux shell**
+
+```bash
+export SYNTHTRAFFIC_LICENSE_FILE=/path/to/license.env
+```
+
+**PowerShell**
 
 ```powershell
-Get-FileHash .\synthtraffic_1.0.0_windows_amd64.zip
-# compare with the line in checksums.txt
+$env:SYNTHTRAFFIC_LICENSE_FILE = "C:/path/to/license.env"
 ```
 
-## License
+## Run a sample
 
-Synthtraffic requires a signed `license.env`. After signup you receive a license file; activate once:
+Save this as `hello-world.yaml`:
+
+```yaml
+generators:
+  - name: events
+    value:
+      eventId: =uuid()
+      source: =oneOf(web, mobile, api)
+      createdAt: =now(format=RFC3339Milli)
+```
+
+Then preview three events:
 
 ```bash
-synthtraffic license activate license.env
-synthtraffic license status
+synthtraffic sample hello-world.yaml --events 3 --seed 42
 ```
-
-Get a trial or purchase a license from the Synthtraffic website.
